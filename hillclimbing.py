@@ -1,42 +1,38 @@
 import random
 
-def objective_function(x):
-    """
-    Objective function to maximize. 
-    This is just an example function, you can replace it with any other function.
-    """
-    return -(x ** 2)
+# Distance matrix representing distances between cities
+distance_matrix = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
 
-def random_neighbor(solution, step_size):
-    """
-    Generate a random neighbor of the current solution.
-    """
-    return solution + random.uniform(-step_size, step_size)
+def total_distance(path):
+    total = 0
+    for i in range(len(path) - 1):
+        total += distance_matrix[path[i]][path[i+1]]
+    total += distance_matrix[path[-1]][path[0]]  # Return to starting city
+    return total
 
-def hill_climbing(objective_function, initial_solution, step_size, max_iter):
-    """
-    Hill Climbing Algorithm to maximize the objective function.
-    """
-    current_solution = initial_solution
-    current_value = objective_function(current_solution)
+def hill_climbing_tsp(num_cities):
+    current_path = list(range(num_cities))
+    current_distance = total_distance(current_path) 
+    for _ in range(10000):
+        neighbor_path = current_path[:]
+        i, j = random.sample(range(num_cities), 2)
+        neighbor_path[i], neighbor_path[j] = neighbor_path[j], neighbor_path[i]
+        neighbor_distance = total_distance(neighbor_path)
+        if neighbor_distance < current_distance:
+            current_path = neighbor_path
+            current_distance = neighbor_distance
+    return current_path
 
-    for _ in range(max_iter):
-        neighbor = random_neighbor(current_solution, step_size)
-        neighbor_value = objective_function(neighbor)
+def main():
+    num_cities = 4
+    solution = hill_climbing_tsp(num_cities)
+    print("Optimal path:", solution)
+    print("Total distance:", total_distance(solution))
 
-        if neighbor_value > current_value:
-            current_solution = neighbor
-            current_value = neighbor_value
-
-    return current_solution, current_value
-
-# Define the initial solution and algorithm parameters
-initial_solution = random.uniform(-10, 10)
-step_size = 0.1
-max_iter = 1000
-
-# Run the algorithm
-best_solution, best_value = hill_climbing(objective_function, initial_solution, step_size, max_iter)
-
-print("Best solution:", best_solution)
-print("Best value:", best_value)
+if __name__ == "__main__":
+    main()

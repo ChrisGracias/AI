@@ -43,7 +43,7 @@ def play_hangman():
             print("Correct guess!")
             print(display_word(word, guessed_letters))
             if is_word_complete(word, guessed_letters):
-                print("Congratulations, you guessed the word!")
+                print("Congratulations, you gues sed the word!")
                 break
         else:
             guessed_letters.append(guess)
